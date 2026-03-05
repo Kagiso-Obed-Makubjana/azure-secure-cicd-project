@@ -1,0 +1,45 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  imageName: cicd-demo
+
+stages:
+
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+
+    - script: |
+        npm install
+      displayName: Install dependencies
+
+    - script: |
+        docker build -t $(imageName) -f docker/Dockerfile .
+      displayName: Build Docker Image
+
+- stage: SecurityScan
+  jobs:
+  - job: Scan
+    steps:
+    - script: |
+        docker run aquasec/trivy image $(imageName)
+      displayName: Container Security Scan
+
+- stage: Deploy
+  jobs:
+  - job: TerraformDeploy
+    steps:
+
+    - script: |
+        terraform init
+        terraform apply -auto-approve
+      workingDirectory: terraform
