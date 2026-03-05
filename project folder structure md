@@ -1,0 +1,15 @@
+azure-secure-cicd-project
+│
+├── app
+│   ├── app.js
+│   └── package.json
+│
+├── docker
+│   └── Dockerfile
+│
+├── terraform
+│   ├── main.tf
+│   ├── variables.tf
+│   └── outputs.tf
+│
+└── azure-pipelines.yml
